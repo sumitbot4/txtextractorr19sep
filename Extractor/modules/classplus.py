@@ -72,7 +72,7 @@ async def classplus_txt(app, message, user_id=None):
                 "OR\n\n"
                 "Access Token"
             ),
-            reply_to_message_id=message.id,  # <-- FIXED HERE
+            reply_to_message_id=message.id,
             timeout=120
         )
         creds = reply.text
@@ -100,7 +100,7 @@ async def classplus_txt(app, message, user_id=None):
                         reply_otp = await app.ask(
                             message.chat.id,
                             '**Send OTP?**',
-                            reply_to_message_id=reply.message_id,
+                            reply_to_message_id=reply.id,
                             timeout=120
                         )
                         if reply_otp.text.isdigit():
@@ -125,7 +125,7 @@ async def classplus_txt(app, message, user_id=None):
                                         '**Your Access Token for future uses -**\n\n'
                                         f'<pre>{token}</pre>'
                                     ),
-                                    reply_to_message_id=reply_otp.message_id
+                                    reply_to_message_id=reply_otp.id
                                 )
                                 logged_in = True
                             else:
@@ -169,7 +169,7 @@ async def classplus_txt(app, message, user_id=None):
                             '**Send index number of the course to download.**\n\n'
                             f'{text}'
                         ),
-                        reply_to_message_id=reply.message_id,
+                        reply_to_message_id=reply.id,
                         timeout=120
                     )
                     if reply_course.text.isdigit() and int(reply_course.text) <= len(courses):
@@ -180,7 +180,7 @@ async def classplus_txt(app, message, user_id=None):
                         loader = await app.send_message(
                             message.chat.id,
                             '**Extracting course...**',
-                            reply_to_message_id=reply_course.message_id
+                            reply_to_message_id=reply_course.id
                         )
                         course_content = await get_course_content(session, selected_course_id)
                         await loader.delete()
@@ -212,13 +212,12 @@ async def classplus_txt(app, message, user_id=None):
                 f'Error : {e}'
                 '**'
             ),
-            reply_to_message_id=message.message_id
+            reply_to_message_id=message.id
         )
 
 @app.on_message(filters.command("extract") & filters.user(SUDO_USERS))
 async def extract_handler(client, message):
     await classplus_txt(client, message)
 
-# Do not start app or idle() here if this is a module.
 if __name__ == "__main__":
     app.run()
