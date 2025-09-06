@@ -72,7 +72,7 @@ async def classplus_txt(app, message, user_id=None):
                 "OR\n\n"
                 "Access Token"
             ),
-            reply_to_message_id=message.message_id,
+            reply_to_message_id=message.id,  # <-- FIXED HERE
             timeout=120
         )
         creds = reply.text
