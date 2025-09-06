@@ -574,7 +574,7 @@ async def handle_callback(_, query):
       
   
     elif query.data=="classplus_":          
-        await classplus_txt(app, query.message)
+        await classplus_txt(app, query.message, query.from_user.id)
   
     elif query.data == 'pw_':
         await query.message.reply_text(
@@ -595,24 +595,6 @@ async def handle_callback(_, query):
         api = "yesofficerapi.classx.co.in"
         name = "yes officer"
         await appex_v3_txt(app, query.message, api, name) 
-
-
-
-
-
-
-  
-
-                
-  
-    
-      
-   
-
-  
-
-  
-
     elif query.data=="close_data":
         await query.message.delete()
         await query.message.reply_to_message.delete()
