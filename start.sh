@@ -2,4 +2,4 @@
 set -e
 
 echo "Starting Bot..."
-python3 -m extractor
+python3 -m Extractor
