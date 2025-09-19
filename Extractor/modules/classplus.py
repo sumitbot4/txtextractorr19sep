@@ -300,5 +300,6 @@ async def extract_handler(client, message):
     session = requests.Session()
     await classplus_txt(message, session, user_id=None)
 
-app.start()
-idle()
+await app.start()
+await idle()
+
