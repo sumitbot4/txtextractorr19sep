@@ -1,24 +1,30 @@
-
 # Python Based Docker
 FROM python:3.11-slim
 
+# Set environment variables (prevents Python from writing .pyc & buffering stdout)
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Installing Packages
-RUN apt update && apt upgrade -y
-RUN apt install git curl python3-pip ffmpeg aria2 -y
+# Installing system packages (build tools + runtime tools)
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+        git curl ffmpeg aria2 build-essential python3-dev && \
+    rm -rf /var/lib/apt/lists/*
 
-# Updating Pip Packages
-RUN pip3 install -U pip
+# Upgrade pip/setuptools/wheel
+RUN pip install --upgrade pip setuptools wheel
 
-# Copying Requirements
-COPY requirements.txt /requirements.txt
+# Copy requirements first (better Docker caching)
+COPY requirements.txt /tmp/requirements.txt
 
-# Installing Requirements
-RUN cd /
-RUN pip3 install -U -r requirements.txt
-RUN mkdir /EXTRACTOR
-WORKDIR / EXTRACTOR
+# Install Python dependencies
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
+
+# Create working directory
+WORKDIR /EXTRACTOR
+
+# Copy entrypoint script
 COPY start.sh /start.sh
 
-# Running MessageSearchBot
-CMD ["/bin/bash", "/start.sh"
+# Run script
+CMD ["/bin/bash", "/start.sh"]
