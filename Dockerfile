@@ -1,6 +1,7 @@
 
 # Python Based Docker
-FROM python:latest
+FROM python:3.11-slim
+
 
 # Installing Packages
 RUN apt update && apt upgrade -y
