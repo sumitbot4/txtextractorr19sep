@@ -25,9 +25,9 @@ import os
 import asyncio
 import importlib
 import logging
-from pyrogram import Client, idle
 from logging.handlers import RotatingFileHandler
-from config import API_ID, API_HASH, BOT_TOKEN, OWNER_ID, SUDO_USERS, MONGO_URL, CHANNEL_ID, PREMIUM_LOGS  # Directly import required variables
+from pyrogram import idle
+from config import API_ID, API_HASH, BOT_TOKEN, OWNER_ID, SUDO_USERS, MONGO_URL, CHANNEL_ID, PREMIUM_LOGS
 from Extractor.modules import ALL_MODULES
 from web import web_app
 import threading
@@ -46,21 +46,22 @@ logging.basicConfig(
 
 # Bot initialization function
 async def sumit_boot():
+    # Load all modules
     for all_module in ALL_MODULES:
         importlib.import_module("Extractor.modules." + all_module)
 
     LOGGER.info("» ʙᴏᴛ ᴅᴇᴘʟᴏʏ sᴜᴄᴄᴇssғᴜʟʟʏ 🚀🎉")
-    await idle()
+    await idle()  # Keep the bot running
     LOGGER.info("» ɢᴏᴏᴅ ʙʏᴇ ! sᴛᴏᴘᴘɪɴɢ ʙᴏᴛ.")
 
+# Function to run the web server
 def run_web():
-    web_app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    PORT = int(os.environ.get("PORT", 8080))
+    web_app.run(host="0.0.0.0", port=PORT, threaded=True)
 
 if __name__ == "__main__":
-    threading.Thread(target=run_web).start()  # Start web server in background
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(sumit_boot())     # Start Pyrogram bot
+    # Start web server in a separate thread
+    threading.Thread(target=run_web).start()
 
-
-
-
+    # Start the bot in the main thread (async)
+    asyncio.run(sumit_boot())
